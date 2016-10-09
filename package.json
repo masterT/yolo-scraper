@@ -1,0 +1,39 @@
+{
+  "name": "yolo-scraper",
+  "version": "0.0.1",
+  "description": "A simple way to structure your web scraper.",
+  "main": "lib/index.js",
+  "keywords": [
+    "scraping",
+    "scraper",
+    "html",
+    "extract",
+    "structure",
+    "simple",
+    "validation"
+  ],
+  "author": "Simon Thiboutôt <salut@simonthiboutot.com> (http://simonthiboutot.com)",
+  "license": "MIT",
+  "dependencies": {
+    "ajv": "4.7.7",
+    "cheerio": "0.22.0",
+    "request": "2.75.0"
+  },
+  "devDependencies": {
+    "jasmine": "^2.5.2"
+  },
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/masterT/yolo-scraper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/masterT/yolo-scraper/issues"
+  },
+  "homepage": "https://github.com/masterT/yolo-scraper#readme"
+}
