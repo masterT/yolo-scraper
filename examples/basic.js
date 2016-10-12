@@ -1,11 +1,10 @@
 var yoloScraper = require('../index.js');
 
+
 var scrape = yoloScraper({
 
-  request: function (params) {
-    return {
-      url: 'https://www.npmjs.com/~' + params.username.toLowerCase()
-    };
+  request: function (username) {
+    return 'https://www.npmjs.com/~' + username.toLowerCase();
   },
 
   extract: function (response, body, $) {
@@ -37,6 +36,6 @@ var scrape = yoloScraper({
 });
 
 
-scrape({username: 'masterT'}, function (error, data) {
+scrape('masterT', function (error, data) {
   console.log(error || data);
 });

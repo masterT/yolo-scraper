@@ -20,13 +20,14 @@
     "request": "2.75.0"
   },
   "devDependencies": {
-    "jasmine": "^2.5.2"
+    "jasmine": "2.5.2",
+    "nock": "8.1.0"
   },
   "directories": {
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jasmine"
   },
   "repository": {
     "type": "git",

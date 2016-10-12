@@ -21,13 +21,13 @@ function merge(object1, object2) {
 */
 module.exports = function (options) {
 
-  if (typeof options.request != 'function') {
+  if (typeof options.request !== 'function') {
     throw new Error("Expect options.request to be a function");
   }
-  if (typeof options.extract != 'function') {
+  if (typeof options.extract !== 'function') {
     throw new Error("Expect options.extract to be a function");
   }
-  if (typeof options.validate != 'object') {
+  if (typeof options.validate !== 'object') {
     throw new Error("Expect options.validate to be an object");
   }
 
@@ -48,23 +48,27 @@ module.exports = function (options) {
     return validateSchema(data) || 'Error invalid data: ' + ajv.errorsText(validateSchema.errors);
   }
 
-  return function(params, callback) {
-    // define the request
+  return function (params, callback) {
+
+    if (typeof callback !== 'function') {
+      throw new Error("Expect callback to be a function");
+    }
+
     var requestOption = options.request(params);
-    // make the request
+
     request(requestOption, function (error, response, body) {
-      if (error) return options.callback(error, null);
-      // extract the data
-      var $ = cheerio.load(body);
-      var data = options.extract(response, body, $);
-      // validate the data
-      var valid = validate(data);
-      if (valid === true) {
-        callback(null, data);
+      if (error) {
+        callback(error, null);
       } else {
-        callback(valid, null);
+        var $ = cheerio.load(body);
+        var data = options.extract(response, body, $);
+        var valid = validate(data);
+        if (valid === true) {
+          callback(null, data);
+        } else {
+          callback(new Error(valid), null);
+        }
       }
     });
   };
-
 };

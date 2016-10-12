@@ -24,10 +24,8 @@ Define your scraper function.
 ```js
 var scrape = yoloScraper({
 
-  request: function (params) {
-    return {
-      url: 'https://www.npmjs.com/~' + params.username.toLowerCase()
-    };
+  request: function (username) {
+    return 'https://www.npmjs.com/~' + username.toLowerCase();
   },
 
   extract: function (response, body, $) {
@@ -57,13 +55,12 @@ var scrape = yoloScraper({
   }
 
 });
-
 ```
 
 Then use it.
 
 ```js
-scrape({username: 'masterT'}, function (error, data) {
+scrape('masterT', function (error, data) {
   console.log(error || data);
 });
 ```
@@ -79,9 +76,16 @@ Incoming
 - [ajv](https://www.npmjs.com/package/ajv) - Another JSON Schema Validator.
 
 
+## dev dependecies
+
+- [jasmine](https://www.npmjs.com/package/jasmine) - DOM-less simple JavaScript testing framework.
+- [nock](https://www.npmjs.com/package/nock) HTTP Server mocking for Node.js.
+
 ## test
 
-Incoming
+```bash
+npm test
+```
 
 
 ## license
