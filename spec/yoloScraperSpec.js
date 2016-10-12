@@ -30,7 +30,7 @@ function npmScraperOptions() {
         };
       });
     },
-    validate: {
+    schema: {
       "$schema": "http://json-schema.org/draft-04/schema#",
       "type" : "array",
       "items": {
@@ -56,7 +56,7 @@ describe("yolo-scraper", function () {
     expect(function () {
       yoloScraper({
         extract: function () {},
-        validate: {}
+        schema: {}
       });
     }).toThrowError(Error, "Expect options.request to be a function");
   });
@@ -65,25 +65,25 @@ describe("yolo-scraper", function () {
     expect(function () {
       yoloScraper({
         request: function () {},
-        validate: {}
+        schema: {}
       });
     }).toThrowError(Error, "Expect options.extract to be a function");
   });
 
-  it("throws an error without function property `validate`", function () {
+  it("throws an error without function property `schema`", function () {
     expect(function () {
       yoloScraper({
         request: function () {},
         extract: function () {}
       });
-    }).toThrowError(Error, "Expect options.validate to be an object");
+    }).toThrowError(Error, "Expect options.schema to be an object");
   });
 
-  it("returns a function with properties `request`, `extract` and `validate`", function () {
+  it("returns a function with properties `request`, `extract` and `schema`", function () {
     var scraper = yoloScraper({
       request: function () {},
       extract: function () {},
-      validate: {}
+      schema: {}
     });
     expect(typeof scraper).toEqual("function");
   });

@@ -1,7 +1,7 @@
 var yoloScraper = require('../index.js');
 
 
-var scrape = yoloScraper({
+var scraper = yoloScraper({
 
   request: function (username) {
     return 'https://www.npmjs.com/~' + username.toLowerCase();
@@ -18,7 +18,7 @@ var scrape = yoloScraper({
     });
   },
 
-  validate: {
+  schema: {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type" : "array",
     "items": {
@@ -36,6 +36,6 @@ var scrape = yoloScraper({
 });
 
 
-scrape('masterT', function (error, data) {
+scraper('masterT', function (error, data) {
   console.log(error || data);
 });

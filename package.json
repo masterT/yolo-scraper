@@ -10,7 +10,9 @@
     "extract",
     "structure",
     "simple",
-    "validation"
+    "validation",
+    "json",
+    "schema"
   ],
   "author": "Simon Thiboutôt <salut@simonthiboutot.com> (http://simonthiboutot.com)",
   "license": "MIT",

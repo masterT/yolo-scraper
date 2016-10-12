@@ -27,8 +27,8 @@ module.exports = function (options) {
   if (typeof options.extract !== 'function') {
     throw new Error("Expect options.extract to be a function");
   }
-  if (typeof options.validate !== 'object') {
-    throw new Error("Expect options.validate to be an object");
+  if (typeof options.schema !== 'object') {
+    throw new Error("Expect options.schema to be an object");
   }
 
   var cheerioOptions = {};
@@ -42,7 +42,7 @@ module.exports = function (options) {
   }
 
   var ajv = new Ajv(ajvOptions);
-  var validateSchema = ajv.compile(options.validate);
+  var validateSchema = ajv.compile(options.schema);
   // returns true if the data is valid, otherwise the error message
   var validate = function (data) {
     return validateSchema(data) || 'Error invalid data: ' + ajv.errorsText(validateSchema.errors);

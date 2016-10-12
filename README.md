@@ -9,20 +9,18 @@
 
 ## install
 
-<!--Using NPM:
+<!-- Using NPM:
 
 ```bash
 npm install yolo-scraper --save
 ``` -->
-
-Incoming
 
 ## usage
 
 Define your scraper function.
 
 ```js
-var scrape = yoloScraper({
+var scraper = yoloScraper({
 
   request: function (username) {
     return 'https://www.npmjs.com/~' + username.toLowerCase();
@@ -39,7 +37,7 @@ var scrape = yoloScraper({
     });
   },
 
-  validate: {
+  schema: {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type" : "array",
     "items": {
@@ -60,14 +58,43 @@ var scrape = yoloScraper({
 Then use it.
 
 ```js
-scrape('masterT', function (error, data) {
+scraper('masterT', function (error, data) {
   console.log(error || data);
 });
 ```
 
 ## documentation
 
-Incoming
+### `var scraper = yoloScraper(options)`
+
+Takes an `options` object and returns a scraper function.
+
+```js
+scraper = function(params, callback = function(error, data))
+```
+
+The `params` argument is anything you want. The `callback` argument is a function that will be called when the scraping is done.
+
+When there an error, its argument `error` will be null and its argument `data` will be the `options.extract`.
+
+If there is an error then `error` is an instance of Error and `data` is null.
+
+
+
+#### `options.request(params)`
+
+Takes the same argument passed to the scraper function. It should return a valid [request ](https://www.npmjs.com/package/request) option.
+
+#### `options.extract(response, body, $)`
+
+Takes the [request](https://www.npmjs.com/package/request) response, the response body and a [cheerio](https://www.npmjs.com/package/cheerio) instance. It should return the data you want to extract.
+
+#### `options.schema`
+
+The [JSON schema](https://spacetelescope.github.io/understanding-json-schema/) that define the extracted data. The scraper function calls the callback function with an `Error` and no data when the data is invalid.
+
+The Error message will contain the validation message.
+
 
 ## dependecies
 
