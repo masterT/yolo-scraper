@@ -65,35 +65,68 @@ scraper('masterT', function (error, data) {
 
 ## documentation
 
-### `var scraper = yoloScraper(options)`
+### Define our scraper
 
-Takes an `options` object and returns a scraper function.
+You define your scraper by calling `yolo-scraper` function with your options.
 
 ```js
-scraper = function(params, callback = function(error, data))
+var yoloScraper = require('yolo-scraper');
+
+var options = {
+  // ...
+};
+var scraper = yoloScraper(options);
 ```
 
-The `params` argument is anything you want. The `callback` argument is a function that will be called when the scraping is done.
+#### `options.request = function(params)`
 
-When there an error, its argument `error` will be null and its argument `data` will be the `options.extract`.
+**Required**
 
-If there is an error then `error` is an instance of Error and `data` is null.
+Function that takes the *same argument* passed to your scraper function. It returns the options to pass to the [request ](https://www.npmjs.com/package/request) module to make the request.
 
 
+#### `options.extract = function(response, body, $)`
 
-#### `options.request(params)`
+**Required**
 
-Takes the same argument passed to the scraper function. It should return a valid [request ](https://www.npmjs.com/package/request) option.
+Function that takes [request](https://www.npmjs.com/package/request) response, the response body and a [cheerio](https://www.npmjs.com/package/cheerio) instance. It returns the extracted data you want.
 
-#### `options.extract(response, body, $)`
-
-Takes the [request](https://www.npmjs.com/package/request) response, the response body and a [cheerio](https://www.npmjs.com/package/cheerio) instance. It should return the data you want to extract.
 
 #### `options.schema`
 
-The [JSON schema](https://spacetelescope.github.io/understanding-json-schema/) that define the extracted data. The scraper function calls the callback function with an `Error` and no data when the data is invalid.
+**Required**
 
-The Error message will contain the validation message.
+The [JSON schema](https://spacetelescope.github.io/understanding-json-schema/) that defines the shape of your extracted data. When your data is invalid, an Error with the validation message will be passed to your scraper callback.
+
+
+#### `options.cheerioOptions`
+
+The option to pass to [cheerio](https://www.npmjs.com/package/cheerio) when it loads the request body.
+
+Default: `{}`
+
+
+#### `options.ajvOptions = {}`
+
+The option to pass to [ajv](https://www.npmjs.com/package/ajv) when it compiles the schema.
+
+Default: `{allErrors: true}` - It check all rules collecting all errors
+
+
+### Use your scraper function
+
+To use your scraper function, pass the params of your scraping request, and a callback function.
+
+```js
+scraper(params, function (error, data) {
+  if (error) {
+    // handle the `error`
+  } else {
+    // do something with `data`
+  }
+});
+```
+When an error occured (request, validation, etc.) the callback `error` argument will be an instance of Error and the `data` will be *null*. Otherwise, the `error` argument will be *null* and the data will be your what you extracted.
 
 
 ## dependecies

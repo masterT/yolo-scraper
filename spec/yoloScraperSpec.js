@@ -6,7 +6,6 @@ var path = require('path'),
     yoloScraper = require("../index.js");
 
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
 
 function fixture(filename) {
@@ -14,34 +13,22 @@ function fixture(filename) {
 };
 
 
-function npmScraperOptions() {
+function scraperOptions() {
   return {
-    request: function (username) {
-      return 'https://www.npmjs.com/~' + username.toLowerCase();
+    request: function (listType) {
+      return 'https://www.example.com/lists/' + listType;
     },
     extract: function (response, body, $) {
-      if (response.statusCode != 200) throw new Error("Bad response from server!");
-      return Array.from($('.collaborated-packages li')).map(function (element) {
-        var $element = $(element);
-        return {
-          name: $element.find('a').text(),
-          url: $element.find('a').attr('href'),
-          version: $element.find('strong').text()
-        };
+      return Array.from($('li')).map(function (element) {
+        return $(element).text();
       });
     },
     schema: {
       "$schema": "http://json-schema.org/draft-04/schema#",
       "type" : "array",
       "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "name": { "type": "string" },
-          "url": { "type": "string", "format": "uri" },
-          "version": { "type": "string", "pattern": "^v\\d+\\.\\d+\\.\\d+$" }
-        },
-        "required": [ "name", "url", "version" ]
+        "type": "string",
+        "additionalProperties": false
       }
     }
   };
@@ -90,17 +77,17 @@ describe("yolo-scraper", function () {
 
 
   describe("the returned function", function () {
-    var requestBody = fixture("~mastert.html"),
-        params = 'masterT',
+    var requestBody = fixture("list.html"),
+        params = 'numbers',
         scraper, options;
 
     describe("with good request response", function () {
 
       beforeEach(function () {
-        options = npmScraperOptions();
+        options = scraperOptions();
         scraper = yoloScraper(options);
         // mock the HTTP request
-        nock('https://www.npmjs.com').get('/~mastert').reply(200, requestBody);
+        nock('https://www.example.com/lists').get('/numbers').reply(200, requestBody);
       });
 
       it("calls the `request` function with its params", function (done) {
@@ -129,11 +116,7 @@ describe("yolo-scraper", function () {
 
       it("extracts the data from response and calls the callback", function (done) {
         options.extract = function (response, body, $) {
-          return [{
-            name: 'yolo-scraper',
-            url: '/package/yolo-scraper',
-            version: 'v0.0.1'
-          }];
+          return ["1", "2", "3", "4", "5"];
         };
 
         scraper(params, function (error, data) {
@@ -149,13 +132,13 @@ describe("yolo-scraper", function () {
     describe("with bad request response", function () {
 
       beforeEach(function () {
-        options = npmScraperOptions();
+        options = scraperOptions();
         scraper = yoloScraper(options);
       });
 
       it("calls the callback with error, when request error", function (done) {
         // mock the HTTP request
-        nock('https://www.npmjs.com').get('/~mastert').replyWithError("Server error");
+        nock('https://www.example.com/lists').get('/numbers').replyWithError("Server error");
 
         scraper(params, function (error, data) {
           expect(error instanceof Error).toBe(true);
@@ -167,17 +150,17 @@ describe("yolo-scraper", function () {
 
       it("calls the callback with error, when data is invalid", function (done) {
         // mock the HTTP request
-        nock('https://www.npmjs.com').get('/~mastert').reply(200, "");
+        nock('https://www.example.com/lists').get('/numbers').reply(200, "");
 
         options.extract = function (response, body, $) {
           return [{
-            invalidPropName: 'invalid'
+            invalidObject: 'expectString'
           }];
         };
 
         scraper(params, function (error, data) {
           expect(error instanceof Error).toBe(true);
-          expect(error.message).toBe("Error invalid data: data[0] should NOT have additional properties, data[0] should have required property 'name', data[0] should have required property 'url', data[0] should have required property 'version'");
+          expect(error.message).toMatch(/Error invalid data: /);
           expect(data).toBe(null);
           done();
         });
