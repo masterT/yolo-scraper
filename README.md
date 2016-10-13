@@ -2,6 +2,9 @@
 
 > A simple way to structure your web scraper.
 
+[![Build Status](https://travis-ci.org/masterT/yolo-scraper.svg?branch=master)](https://travis-ci.org/masterT/yolo-scraper)
+[![Dependency Status](https://gemnasium.com/badges/github.com/masterT/yolo-scraper.svg)](https://gemnasium.com/github.com/masterT/yolo-scraper)
+
 1. Define the request.
 2. Extract the data from the response.
 3. Validate the data.
