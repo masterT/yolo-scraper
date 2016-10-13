@@ -19,7 +19,7 @@ function scraperOptions() {
       return 'https://www.example.com/lists/' + listType;
     },
     extract: function (response, body, $) {
-      return Array.from($('li')).map(function (element) {
+      return $('li').toArray().map(function (element) {
         return $(element).text();
       });
     },
