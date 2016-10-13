@@ -13,7 +13,7 @@ function merge(object1, object2) {
     }
   }
   return object1;
-};
+}
 
 
 /**
@@ -58,15 +58,15 @@ module.exports = function (options) {
 
     request(requestOption, function (error, response, body) {
       if (error) {
-        callback(error, null);
+        return callback(error, null);
       } else {
         var $ = cheerio.load(body);
         var data = options.extract(response, body, $);
         var valid = validate(data);
         if (valid === true) {
-          callback(null, data);
+          return callback(null, data);
         } else {
-          callback(new Error(valid), null);
+          return callback(new Error(valid), null);
         }
       }
     });
