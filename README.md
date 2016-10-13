@@ -1,22 +1,24 @@
-# yolo-scraper
+![yolo-scraper](http://i.imgur.com/zu4AVzS.jpg)
 
 > A simple way to structure your web scraper.
 
 [![Build Status](https://travis-ci.org/masterT/yolo-scraper.svg?branch=master)](https://travis-ci.org/masterT/yolo-scraper)
 [![Dependency Status](https://gemnasium.com/badges/github.com/masterT/yolo-scraper.svg)](https://gemnasium.com/github.com/masterT/yolo-scraper)
 
-1. Define the request.
-2. Extract the data from the response.
-3. Validate the data.
+
+
+- Define the request.
+- Extract the data from the response.
+- Validate the data against JSON Schema.
 
 
 ## install
 
-<!-- Using NPM:
+Using NPM:
 
 ```bash
 npm install yolo-scraper --save
-``` -->
+```
 
 ## usage
 
@@ -83,37 +85,37 @@ var scraper = yoloScraper(options);
 
 #### `options.request = function(params)`
 
-**Required**
-
 Function that takes the *same argument* passed to your scraper function. It returns the options to pass to the [request ](https://www.npmjs.com/package/request) module to make the request.
+
+**Required**
 
 
 #### `options.extract = function(response, body, $)`
 
-**Required**
-
 Function that takes [request](https://www.npmjs.com/package/request) response, the response body and a [cheerio](https://www.npmjs.com/package/cheerio) instance. It returns the extracted data you want.
+
+**Required**
 
 
 #### `options.schema`
 
-**Required**
-
 The [JSON schema](https://spacetelescope.github.io/understanding-json-schema/) that defines the shape of your extracted data. When your data is invalid, an Error with the validation message will be passed to your scraper callback.
+
+**Required**
 
 
 #### `options.cheerioOptions`
 
 The option to pass to [cheerio](https://www.npmjs.com/package/cheerio) when it loads the request body.
 
-Default: `{}`
+Optional, default: `{}`
 
 
 #### `options.ajvOptions = {}`
 
 The option to pass to [ajv](https://www.npmjs.com/package/ajv) when it compiles the schema.
 
-Default: `{allErrors: true}` - It check all rules collecting all errors
+Optional, default: `{allErrors: true}` - It check all rules collecting all errors
 
 
 ### Use your scraper function
