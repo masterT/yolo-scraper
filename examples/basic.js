@@ -8,7 +8,7 @@ var scraper = yoloScraper({
   },
 
   extract: function (response, body, $) {
-    return Array.from($('.collaborated-packages li')).map(function (element) {
+    return $('.collaborated-packages li').toArray().map(function (element) {
       var $element = $(element);
       return {
         name: $element.find('a').text(),
