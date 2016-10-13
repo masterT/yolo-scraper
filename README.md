@@ -11,6 +11,8 @@
 - Extract the data from the response.
 - Validate the data against JSON Schema.
 
+[But what is web scraping?](https://en.wikipedia.org/wiki/Web_scraping)
+
 
 ## install
 
