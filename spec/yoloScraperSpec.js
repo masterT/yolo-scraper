@@ -76,6 +76,12 @@ describe("yolo-scraper", function () {
   });
 
 
+  it("returns a function with optional property `ajvOptions`");
+
+
+  it("returns a function with optional property `cheerioOptions`");
+
+
   describe("the returned function", function () {
     var requestBody = fixture("list.html"),
         params = 'numbers',

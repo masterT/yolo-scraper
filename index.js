@@ -3,22 +3,6 @@ var cheerio = require('cheerio'),
     Ajv     = require('ajv');
 
 
-/**
-* Merge properties from object2 to object1.
-*/
-function merge(object1, object2) {
-  for (var propName in object2) {
-    if (object2.hasOwnProperty(optionName)) {
-      object1[propName] = object2[propName];
-    }
-  }
-  return object1;
-}
-
-
-/**
-*
-*/
 module.exports = function (options) {
 
   if (typeof options.request !== 'function') {
@@ -33,14 +17,15 @@ module.exports = function (options) {
 
   var cheerioOptions = {};
   if (typeof options.cheerioOptions === 'object') {
-    cheerioOptions = merge(cheerioOptions, options.cheerio);
+    cheerioOptions = options.cheerioOptions;
   }
 
   var ajvOptions = {allErrors: true};
-  if (typeof options.ajv === 'object') {
-    ajvOptions = merge(ajvOptions, options.ajv);
+  if (typeof options.ajvOptions === 'object') {
+    ajvOptions = options.ajvOptions;
   }
 
+  // compile the JSON schema
   var ajv = new Ajv(ajvOptions);
   var validateSchema = ajv.compile(options.schema);
   // returns true if the data is valid, otherwise the error message
