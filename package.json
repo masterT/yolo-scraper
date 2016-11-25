@@ -17,13 +17,13 @@
   "author": "Simon Thiboutôt <salut@simonthiboutot.com> (http://simonthiboutot.com)",
   "license": "MIT",
   "dependencies": {
-    "ajv": "4.7.7",
-    "cheerio": "0.22.0",
-    "request": "2.75.0"
+    "ajv": "^4.7.7",
+    "cheerio": "^0.22.0",
+    "request": "^2.75.0"
   },
   "devDependencies": {
-    "jasmine": "2.5.2",
-    "nock": "8.1.0"
+    "jasmine": "^2.5.2",
+    "nock": "^8.1.0"
   },
   "directories": {
     "example": "examples"
