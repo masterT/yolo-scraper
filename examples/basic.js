@@ -1,7 +1,7 @@
-var yoloScraper = require('../index.js');
+var yoloScraper = require('../lib/index.js');
 
 
-var scraper = yoloScraper({
+var scraper = yoloScraper.createScraper({
 
   request: function (username) {
     return 'https://www.npmjs.com/~' + username.toLowerCase();
@@ -37,5 +37,6 @@ var scraper = yoloScraper({
 
 
 scraper('masterT', function (error, data) {
-  console.log(error || data);
+  console.log('error:', error);
+  console.log('data:', data);
 });
