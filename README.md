@@ -27,7 +27,9 @@ npm install yolo-scraper --save
 Define your scraper function.
 
 ```js
-var scraper = yoloScraper({
+var yoloScraper = require('yolo-scraper');
+
+var scraper = yoloScraper.createScraper({
 
   request: function (username) {
     return 'https://www.npmjs.com/~' + username.toLowerCase();
@@ -72,9 +74,9 @@ scraper('masterT', function (error, data) {
 
 ## documentation
 
-### Define our scraper
+### `createScraper(options)`
 
-You define your scraper by calling `yolo-scraper` function with your options.
+Returned a scraper function defined by the `options`.
 
 ```js
 var yoloScraper = require('yolo-scraper');
@@ -82,8 +84,40 @@ var yoloScraper = require('yolo-scraper');
 var options = {
   // ...
 };
-var scraper = yoloScraper(options);
+var scraper = yoloScraper.createScraper(options);
 ```
+
+#### Returned scraper function
+
+To use your scraper function, pass the params of your scraping request, and a callback function.
+
+```js
+scraper(params, function (error, data) {
+  if (error) {
+    // handle the `error`
+  } else {
+    // do something with `data`
+  }
+});
+```
+
+When a request error occurred, the callback `error` argument will be an instance of _Error_ and the `data` will be _null_.
+
+##### Case `options.validateList = false`
+
+When an validation error occurred, the callback `error` argument will be an instance of _ValidationError_ and the `data` will be _null_.
+
+Otherwise, the `error` will be _null_ and `data` will be the returned value of `options.extract`.
+
+
+##### Case `options.validateList = true`
+
+When an validation errors occurred, the callback `error` argument will be an instance of _ListValidationError_, otherwise it will be _null_.
+
+If the value returned by `options.extract` is not an Array, `error` will be an instance of _Error_.
+
+The `data` always be an _Array_ that only contains the **valid** item returned by `options.extract`.
+
 
 #### `options.request = function(params)`
 
@@ -113,27 +147,18 @@ The option to pass to [cheerio](https://www.npmjs.com/package/cheerio) when it l
 Optional, default: `{}`
 
 
-#### `options.ajvOptions = {}`
+#### `options.ajvOptions`
 
 The option to pass to [ajv](https://www.npmjs.com/package/ajv) when it compiles the schema.
 
 Optional, default: `{allErrors: true}` - It check all rules collecting all errors
 
 
-### Use your scraper function
+#### `options.validateList`
 
-To use your scraper function, pass the params of your scraping request, and a callback function.
+Use this option to validate each item of the data extracted **individually**. When `true`, the data extracted is **required to be an Array**, otherwise an _Error_ is returned in callback.
 
-```js
-scraper(params, function (error, data) {
-  if (error) {
-    // handle the `error`
-  } else {
-    // do something with `data`
-  }
-});
-```
-When an error occured (request, validation, etc.) the callback `error` argument will be an instance of Error and the `data` will be *null*. Otherwise, the `error` argument will be *null* and the data will be your what you extracted.
+Optional, default: `false`
 
 
 ## dependecies
