@@ -23,10 +23,30 @@ describe("createScraper", function () {
     }).toThrowError(Error, "Expect options.request to be a function");
   });
 
+  it("throws an error when property `request` is not a function", function () {
+    expect(function () {
+      createScraper({
+        request: null,
+        extract: function () {},
+        schema: {}
+      });
+    }).toThrowError(Error, "Expect options.request to be a function");
+  });
+
   it("throws an error without function property `extract`", function () {
     expect(function () {
       createScraper({
         request: function () {},
+        schema: {}
+      });
+    }).toThrowError(Error, "Expect options.extract to be a function");
+  });
+
+  it("throws an error when property `extract` is not a function", function () {
+    expect(function () {
+      createScraper({
+        request: function () {},
+        extract: null,
         schema: {}
       });
     }).toThrowError(Error, "Expect options.extract to be a function");
@@ -41,6 +61,16 @@ describe("createScraper", function () {
     }).toThrowError(Error, "Expect options.schema to be an object");
   });
 
+  it("throws an error when property `schema` is not a boolean", function () {
+    expect(function () {
+      createScraper({
+        request: function () {},
+        extract: function () {},
+        schema: null
+      });
+    }).toThrowError(Error, "Expect options.schema to be an object");
+  });
+
   it("throws an error when property `validateList` is not a boolean", function () {
     expect(function () {
       createScraper({
@@ -50,6 +80,17 @@ describe("createScraper", function () {
         validateList: null
       });
     }).toThrowError(Error, "Expect options.validateList to be a boolean");
+  });
+
+  it("throws an error when property `paramsSchema` is not an object", function () {
+    expect(function () {
+      createScraper({
+        request: function () {},
+        extract: function () {},
+        schema: {},
+        paramsSchema: null
+      });
+    }).toThrowError(Error, "Expect options.paramsSchema to be an object");
   });
 
   it("returns a function with properties `request`, `extract` and `schema`, and without `validateList`", function () {
@@ -68,6 +109,25 @@ describe("createScraper", function () {
 
   it("returns a function with optional property `cheerioOptions`")
     .pend("Don't know how to: mock request module and expect it to receive options.cheerioOptions");
+
+
+  describe("when using paramsSchema", function () {
+
+    it("validate the params", function () {
+      var options = scraperOptions();
+      options.paramsSchema = {
+        "type": "string",
+        "minLength": 1
+      };
+      var invalidParams = "";
+      var scraper = createScraper(options);
+
+      expect(function () {
+        scraper(invalidParams, function(error, data) {});
+      }).toThrowError(Error, /params/)
+    });
+
+  });
 
 
   describe("when validateList is false", function () {
