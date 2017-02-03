@@ -96,48 +96,22 @@ var options = {
 var scraper = yoloScraper.createScraper(options);
 ```
 
-#### Returned scraper function
+#### `options.paramsSchema`
 
-To use your scraper function, pass the params of your scraping request, and a callback function.
+The [JSON schema](https://spacetelescope.github.io/understanding-json-schema/) that defines the shape of the accepted arguments passed to `options.request`. When invalid, an Error will be thrown.
 
-```js
-scraper(params, function (error, data) {
-  if (error) {
-    // handle the `error`
-  } else {
-    // do something with `data`
-  }
-});
-```
-
-When a request error occurred, the callback `error` argument will be an instance of _Error_ and the `data` will be _null_.
-
-##### Case `options.validateList = false`
-
-When an validation error occurred, the callback `error` argument will be an instance of _ValidationError_ and the `data` will be _null_.
-
-Otherwise, the `error` will be _null_ and `data` will be the returned value of `options.extract`.
-
-
-##### Case `options.validateList = true`
-
-When an validation errors occurred, the callback `error` argument will be an instance of _ListValidationError_, otherwise it will be _null_.
-
-If the value returned by `options.extract` is not an Array, `error` will be an instance of _Error_.
-
-The `data` always be an _Array_ that only contains the **valid** item returned by `options.extract`.
-
+Optional
 
 #### `options.request = function(params)`
 
-Function that takes the *same argument* passed to your scraper function. It returns the options to pass to the [request ](https://www.npmjs.com/package/request) module to make the request.
+Function that takes the arguments passed to your scraper function and returns the options to pass to the [request ](https://www.npmjs.com/package/request) module to make the network request.
 
 **Required**
 
 
 #### `options.extract = function(response, body, $)`
 
-Function that takes [request](https://www.npmjs.com/package/request) response, the response body and a [cheerio](https://www.npmjs.com/package/cheerio) instance. It returns the extracted data you want.
+Function that takes [request](https://www.npmjs.com/package/request) response, the response body (_String_) and a [cheerio](https://www.npmjs.com/package/cheerio) instance. It returns the extracted data you want.
 
 **Required**
 
@@ -158,7 +132,7 @@ Optional, default: `{}`
 
 #### `options.ajvOptions`
 
-The option to pass to [ajv](https://www.npmjs.com/package/ajv) when it compiles the schema.
+The option to pass to [ajv](https://www.npmjs.com/package/ajv) when it compiles the JSON schemas.
 
 Optional, default: `{allErrors: true}` - It check all rules collecting all errors
 
@@ -168,6 +142,30 @@ Optional, default: `{allErrors: true}` - It check all rules collecting all error
 Use this option to validate each item of the data extracted **individually**. When `true`, the data extracted is **required to be an Array**, otherwise an _Error_ is returned in callback.
 
 Optional, default: `false`
+
+
+#### scraper function
+
+To use your scraper function, pass the params to send to `options.request`, and a callback function.
+
+```js
+scraper(params, function (error, data) {
+  if (error) {
+    // handle the `error`
+  } else {
+    // do something with `data`
+  }
+});
+```
+
+##### callback(error, data)
+
+- When a network request error occurred, the callback `error` argument will be an _Error_ and the `data` will be _null_.
+
+- When `options.validateList = false` and a validation error occurred, `error` will be a _ValidationError_ and the `data` will be _null_. Otherwise, the `error` will be _null_ and `data` will be the returned value of `options.extract`.
+
+- When `options.validateList = true` and a validation errors occurred, `error` will be a _ListValidationError_, otherwise it will be _null_. If the value returned by `options.extract` is not an Array, `error` will be an instance of _Error_. The `data` always be an _Array_ that only contains the **valid** item returned by `options.extract`. It's not because `error` is a _ListValidationError_ that there will be no `data`!
+
 
 
 ## dependecies

@@ -1,6 +1,6 @@
 {
   "name": "yolo-scraper",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A simple way to structure your web scraper.",
   "main": "lib/index.js",
   "keywords": [
