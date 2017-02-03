@@ -2,6 +2,7 @@
 
 > A simple way to structure your web scraper.
 
+[![npm version](https://badge.fury.io/js/yolo-scraper.svg)](https://badge.fury.io/js/yolo-scraper)
 [![Build Status](https://travis-ci.org/masterT/yolo-scraper.svg?branch=master)](https://travis-ci.org/masterT/yolo-scraper)
 [![Dependency Status](https://gemnasium.com/badges/github.com/masterT/yolo-scraper.svg)](https://gemnasium.com/github.com/masterT/yolo-scraper)
 
@@ -73,6 +74,14 @@ scraper('masterT', function (error, data) {
 ```
 
 ## documentation
+
+### `ValidationError`
+
+_Error_ instance with additional _Object_ property `errorObjects` which content all the error information, see [ajv error](https://github.com/epoberezkin/ajv#error-objects).
+
+### `ListValidationError`
+
+_Error_ instance with additional _Array_ property `validationError` of `ValidationError` instance.
 
 ### `createScraper(options)`
 

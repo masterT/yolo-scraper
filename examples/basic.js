@@ -37,6 +37,9 @@ var scraper = yoloScraper.createScraper({
 
 
 scraper('masterT', function (error, data) {
-  console.log('error:', error);
-  console.log('data:', data);
+  if (error) {
+    console.log('error:', error);
+  } else {
+    console.log('data:', data);
+  }
 });
