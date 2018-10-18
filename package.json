@@ -23,13 +23,14 @@
   },
   "devDependencies": {
     "jasmine": "^2.5.2",
-    "nock": "^8.1.0"
+    "nock": "^8.1.0",
+    "standard": "^12.0.1"
   },
   "directories": {
     "example": "examples"
   },
   "scripts": {
-    "test": "jasmine"
+    "test": "standard && jasmine"
   },
   "repository": {
     "type": "git",
