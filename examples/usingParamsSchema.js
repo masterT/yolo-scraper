@@ -13,12 +13,13 @@ var scraper = yoloScraper.createScraper({
   },
 
   extract: function (response, body, $) {
-    return $('.collaborated-packages li').toArray().map(function (element) {
+    return $('.package-list__packageList___1s35t > section').toArray().map(function (element) {
       var $element = $(element)
+      var publisherMeta = $element.find('.package-list-item__publisherRow___13wUH').text()
       return {
-        name: $element.find('a').text(),
-        url: $element.find('a').attr('href'),
-        version: $element.find('strong').text()
+        name: $element.find('.pr3 a').text(),
+        url: $element.find('.pr3 a').attr('href'),
+        version: 'v' + publisherMeta.match(/\d+\.\d+\.\d+/)[0]
       }
     })
   },
