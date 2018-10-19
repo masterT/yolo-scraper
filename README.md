@@ -5,7 +5,7 @@
 [![npm version](https://badge.fury.io/js/yolo-scraper.svg)](https://badge.fury.io/js/yolo-scraper)
 [![Build Status](https://travis-ci.org/masterT/yolo-scraper.svg?branch=master)](https://travis-ci.org/masterT/yolo-scraper)
 [![Dependency Status](https://gemnasium.com/badges/github.com/masterT/yolo-scraper.svg)](https://gemnasium.com/github.com/masterT/yolo-scraper)
-
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 
 - Define the request.
