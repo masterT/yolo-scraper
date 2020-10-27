@@ -116,14 +116,14 @@ Optional
 
 #### `options.request = function(params)`
 
-Function that takes the arguments passed to your scraper function and returns the options to pass to the [request ](https://www.npmjs.com/package/request) module to make the network request.
+Function that takes the arguments passed to your scraper function and returns the options to pass to the [axios](https://www.npmjs.com/package/axios) module to make the network request.
 
 **Required**
 
 
 #### `options.extract = function(response, body, $)`
 
-Function that takes [request](https://www.npmjs.com/package/request) response, the response body (_String_) and a [cheerio](https://www.npmjs.com/package/cheerio) instance. It returns the extracted data you want.
+Function that takes [axios](https://www.npmjs.com/package/axios) response, the response body (_String_) and a [cheerio](https://www.npmjs.com/package/cheerio) instance. It returns the extracted data you want.
 
 **Required**
 

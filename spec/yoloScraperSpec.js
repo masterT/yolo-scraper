@@ -166,7 +166,7 @@ describe('createScraper', function () {
         options.extract = function (response, body, $) {
           // TODO more accurate spec
           expect(response).toEqual(jasmine.objectContaining({
-            statusCode: 200
+            status: 200
           }))
           expect(body).toBe(requestBody)
           expect(typeof $).toBe('function')
