@@ -4,10 +4,31 @@ var helper = require('./support/specHelper.js')
 var yoloScraper = require('../lib/index.js')
 var createScraper = yoloScraper.createScraper
 var ValidationError = yoloScraper.ValidationError
-var ListValidationError = yoloScraper.ListValidationError
 var fixture = helper.fixture
-var scraperOptions = helper.scraperOptions
-var scraperOptionsValidateList = helper.scraperOptionsValidateList
+
+function scraperRequest (listType) {
+  return 'https://www.example.com/lists/' + listType
+}
+
+function scraperExtract (response, body, $) {
+  return $('li').toArray().map(function (element) {
+    return $(element).text()
+  })
+}
+
+function scraperOptions () {
+  return {
+    request: scraperRequest,
+    extract: scraperExtract,
+    schema: {
+      '$schema': 'http://json-schema.org/draft-04/schema#',
+      'type': 'array',
+      'items': {
+        'type': 'string'
+      }
+    }
+  }
+}
 
 describe('createScraper', function () {
   it('throws an error without function property `request`', function () {
@@ -105,7 +126,7 @@ describe('createScraper', function () {
     .pend("Don't know how to: mock request module and expect it to receive options.cheerioOptions")
 
   describe('when using paramsSchema', function () {
-    it('validate the params', function () {
+    it('validate the params', async function () {
       var options = scraperOptions()
       options.paramsSchema = {
         'type': 'string',
@@ -114,9 +135,7 @@ describe('createScraper', function () {
       var invalidParams = ''
       var scraper = createScraper(options)
 
-      expect(function () {
-        scraper(invalidParams, function () {})
-      }).toThrowError(Error, /params/)
+      await expectAsync(scraper(invalidParams)).toBeRejectedWithError(Error, /params/)
     })
   })
 
@@ -134,17 +153,16 @@ describe('createScraper', function () {
         nock('https://www.example.com/lists').get('/numbers').reply(200, requestBody)
       })
 
-      it('calls the `request` function with its params', function (done) {
+      it('calls the `request` function with its params', async function () {
         spyOn(options, 'request').and.callThrough()
 
-        scraper(params, function () {
-          done()
-        })
-
-        expect(options.request).toHaveBeenCalledWith(params)
+        await scraper(params)
+          .then(function () {
+            expect(options.request).toHaveBeenCalledWith(params)
+          })
       })
 
-      it('calls the `extract` function with reponse, body and cheerio object', function (done) {
+      it('calls the `extract` function with reponse, body and cheerio object', async function () {
         options.extract = function (response, body, $) {
           // TODO more accurate spec
           expect(response).toEqual(jasmine.objectContaining({
@@ -152,22 +170,22 @@ describe('createScraper', function () {
           }))
           expect(body).toBe(requestBody)
           expect(typeof $).toBe('function')
-          done()
+
+          return []
         }
 
-        scraper(params, function () {})
+        await scraper(params)
       })
 
-      it('extracts the data from response and calls the callback', function (done) {
+      it('extracts the data from response and calls the callback', async function () {
         options.extract = function (response, body, $) {
           return ['1', '2', '3', '4', '5']
         }
 
-        scraper(params, function (error, data) {
-          expect(error).toBe(null)
-          expect(data).toEqual(options.extract())
-          done()
-        })
+        await scraper(params)
+          .then(function (data) {
+            expect(data).toEqual(options.extract())
+          })
       })
     })
 
@@ -177,134 +195,20 @@ describe('createScraper', function () {
         scraper = createScraper(options)
       })
 
-      it('calls the callback with Error, when request error', function (done) {
-        nock('https://www.example.com/lists').get('/numbers').replyWithError('Server error')
+      it('calls the callback with Error, when request error', async function () {
+        nock('https://www.example.com/lists').get('/numbers').replyWithError(Error)
 
-        scraper(params, function (error, data) {
-          expect(error instanceof Error).toBe(true)
-          expect(error.message).toBe('Server error')
-          expect(data).toBe(null)
-          done()
-        })
+        await expectAsync(scraper(params)).toBeRejected()
       })
 
-      it('calls the callback with ValidationError, when data is invalid', function (done) {
+      it('calls the callback with ValidationError, when data is invalid', async function () {
         nock('https://www.example.com/lists').get('/numbers').reply(200, '')
 
         options.extract = function (response, body, $) {
           return [null]
         }
 
-        scraper(params, function (error, data) {
-          expect(error instanceof ValidationError).toBe(true)
-          expect(error.message).toMatch(/Error invalid data: /)
-          expect(data).toBe(null)
-          done()
-        })
-      })
-    })
-  })
-
-  describe('when validateList is true', function () {
-    var requestBody = fixture('list.html')
-
-    var params = 'numbers'
-
-    var scraper; var options
-
-    describe('with good request response', function () {
-      beforeEach(function () {
-        options = scraperOptionsValidateList()
-        scraper = createScraper(options)
-        nock('https://www.example.com/lists').get('/numbers').reply(200, requestBody)
-      })
-
-      it('calls the `request` function with its params', function (done) {
-        spyOn(options, 'request').and.callThrough()
-
-        scraper(params, function () {
-          done()
-        })
-
-        expect(options.request).toHaveBeenCalledWith(params)
-      })
-
-      it('calls the `extract` function with reponse, body and cheerio object', function (done) {
-        options.extract = function (response, body, $) {
-          // TODO more accurate spec
-          expect(response).toEqual(jasmine.objectContaining({
-            statusCode: 200
-          }))
-          expect(body).toBe(requestBody)
-          expect(typeof $).toBe('function')
-          done()
-          return []
-        }
-
-        scraper(params, function () {})
-      })
-
-      it('extracts the data from response and calls the callback', function (done) {
-        options.extract = function (response, body, $) {
-          return ['1', '2', '3', '4', '5']
-        }
-
-        scraper(params, function (error, data) {
-          expect(error).toBe(null)
-          expect(data).toEqual(options.extract())
-          done()
-        })
-      })
-    })
-
-    describe('with bad request response', function () {
-      beforeEach(function () {
-        options = scraperOptionsValidateList()
-        scraper = createScraper(options)
-      })
-
-      it('calls the callback with Error, when request error', function (done) {
-        nock('https://www.example.com/lists').get('/numbers').replyWithError('Server error')
-
-        scraper(params, function (error, data) {
-          expect(error instanceof Error).toBe(true)
-          expect(error.message).toBe('Server error')
-          expect(data).toBe(null)
-          done()
-        })
-      })
-
-      it('calls the callback with Error, when extracted data is not an Array', function (done) {
-        nock('https://www.example.com/lists').get('/numbers').reply(200, '')
-
-        options.extract = function (response, body, $) {
-          return null
-        }
-
-        scraper(params, function (error, data) {
-          expect(error instanceof Error).toBe(true)
-          expect(error.message).toMatch(/Expect the extracted data to be an array when using options.validateList/)
-          expect(data).toEqual([])
-          done()
-        })
-      })
-
-      it('calls the callback with ListValidationError, when data is invalid', function (done) {
-        nock('https://www.example.com/lists').get('/numbers').reply(200, '')
-
-        options.extract = function (response, body, $) {
-          return [null, '1', '2', undefined, '3']
-        }
-
-        scraper(params, function (error, data) {
-          expect(error instanceof ListValidationError).toBe(true)
-          expect(error.message).toMatch(/Validation errors/)
-          expect(error.validationErrors.length).toBe(2)
-          expect(error.validationErrors[0] instanceof ValidationError).toBe(true)
-          expect(error.validationErrors[1] instanceof ValidationError).toBe(true)
-          expect(data).toEqual(['1', '2', '3'])
-          done()
-        })
+        await expectAsync(scraper(params)).toBeRejectedWithError(ValidationError)
       })
     })
   })

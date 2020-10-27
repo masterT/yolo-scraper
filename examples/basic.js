@@ -2,18 +2,23 @@ var yoloScraper = require('../lib/index.js')
 
 var scraper = yoloScraper.createScraper({
 
+  paramsSchema: {
+    '$schema': 'http://json-schema.org/draft-04/schema#',
+    'type': 'string',
+    'minLength': 1
+  },
+
   request: function (username) {
-    return 'https://www.npmjs.com/~' + username.toLowerCase()
+    return 'https://github.com/' + username + '?tab=repositories'
   },
 
   extract: function (response, body, $) {
-    return $('.package-list__packageList___1s35t > section').toArray().map(function (element) {
-      var $element = $(element)
-      var publisherMeta = $element.find('.package-list-item__publisherRow___13wUH').text()
+    return $('#user-repositories-list ul li').toArray().map(function (element) {
+      var $container = $($(element).children('div')[0])
+      var $elements = $container.children('div')
       return {
-        name: $element.find('.pr3 a').text(),
-        url: $element.find('.pr3 a').attr('href'),
-        version: 'v' + publisherMeta.match(/\d+\.\d+\.\d+/)[0]
+        name: $($elements[0]).find('a').text().trim(),
+        url: $($elements[0]).find('a').attr('href')
       }
     })
   },
@@ -26,19 +31,18 @@ var scraper = yoloScraper.createScraper({
       'additionalProperties': false,
       'properties': {
         'name': { 'type': 'string' },
-        'url': { 'type': 'string', 'format': 'uri' },
-        'version': { 'type': 'string', 'pattern': '^v\\d+\\.\\d+\\.\\d+$' }
+        'url': { 'type': 'string', 'format': 'uri' }
       },
-      'required': [ 'name', 'url', 'version' ]
+      'required': [ 'name', 'url' ]
     }
   }
 
 })
 
-scraper('masterT', function (error, data) {
-  if (error) {
-    console.log('error:', error)
-  } else {
-    console.log('data:', data)
-  }
-})
+scraper('masterT')
+  .then(function (data) {
+    console.log(data)
+  })
+  .catch(function (error) {
+    console.error(error)
+  })
