@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "jasmine": "^3.6.2",
-    "nock": "^8.1.0",
+    "nock": "^13.0.4",
     "standard": "^15.0.0"
   },
   "directories": {
