@@ -17,7 +17,7 @@
   "author": "Simon Thiboutôt <salut@simonthiboutot.com> (http://simonthiboutot.com)",
   "license": "MIT",
   "dependencies": {
-    "ajv": "^4.7.7",
+    "ajv": "^6.12.6",
     "cheerio": "^1.0.0-rc.3",
     "request": "^2.75.0"
   },
