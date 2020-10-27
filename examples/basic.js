@@ -3,9 +3,9 @@ var yoloScraper = require('../lib/index.js')
 var scraper = yoloScraper.createScraper({
 
   paramsSchema: {
-    '$schema': 'http://json-schema.org/draft-04/schema#',
-    'type': 'string',
-    'minLength': 1
+    $schema: 'http://json-schema.org/draft-04/schema#',
+    type: 'string',
+    minLength: 1
   },
 
   request: function (username) {
@@ -24,16 +24,16 @@ var scraper = yoloScraper.createScraper({
   },
 
   schema: {
-    '$schema': 'http://json-schema.org/draft-04/schema#',
-    'type': 'array',
-    'items': {
-      'type': 'object',
-      'additionalProperties': false,
-      'properties': {
-        'name': { 'type': 'string' },
-        'url': { 'type': 'string', 'format': 'uri' }
+    $schema: 'http://json-schema.org/draft-04/schema#',
+    type: 'array',
+    items: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        name: { type: 'string' },
+        url: { type: 'string', format: 'uri' }
       },
-      'required': [ 'name', 'url' ]
+      required: ['name', 'url']
     }
   }
 

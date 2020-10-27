@@ -21,10 +21,10 @@ function scraperOptions () {
     request: scraperRequest,
     extract: scraperExtract,
     schema: {
-      '$schema': 'http://json-schema.org/draft-04/schema#',
-      'type': 'array',
-      'items': {
-        'type': 'string'
+      $schema: 'http://json-schema.org/draft-04/schema#',
+      type: 'array',
+      items: {
+        type: 'string'
       }
     }
   }
@@ -129,8 +129,8 @@ describe('createScraper', function () {
     it('validate the params', async function () {
       var options = scraperOptions()
       options.paramsSchema = {
-        'type': 'string',
-        'minLength': 1
+        type: 'string',
+        minLength: 1
       }
       var invalidParams = ''
       var scraper = createScraper(options)
