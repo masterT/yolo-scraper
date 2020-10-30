@@ -67,9 +67,13 @@ var scraper = yoloScraper.createScraper({
 Then use it.
 
 ```js
-scraper('masterT', function (error, data) {
-  console.log(error || data);
-});
+scraper('masterT')
+  .then(function (data) {
+    console.log(data)
+  })
+  .catch(function (error) {
+    console.error(error)
+  })
 ```
 
 ## documentation
@@ -78,9 +82,6 @@ scraper('masterT', function (error, data) {
 
 _Error_ instance with additional _Object_ property `errorObjects` which content all the error information, see [ajv error](https://github.com/epoberezkin/ajv#error-objects).
 
-### `ListValidationError`
-
-_Error_ instance with additional _Array_ property `validationError` of `ValidationError` instance.
 
 ### `createScraper(options)`
 
@@ -95,6 +96,18 @@ var options = {
 var scraper = yoloScraper.createScraper(options);
 ```
 
+The scraper function returns a `Promise` that _resolves_ with the valid extract data or _rejects_ with an `Error`.
+
+```js
+scraper(params)
+  .then(function (data) {
+    console.log(data)
+  })
+  .catch(function (error) {
+    console.error(error)
+  })
+```
+
 #### `options.paramsSchema`
 
 The [JSON schema](https://spacetelescope.github.io/understanding-json-schema/) that defines the shape of the accepted arguments passed to `options.request`. When invalid, an Error will be thrown.
@@ -103,14 +116,14 @@ Optional
 
 #### `options.request = function(params)`
 
-Function that takes the arguments passed to your scraper function and returns the options to pass to the [request ](https://www.npmjs.com/package/request) module to make the network request.
+Function that takes the arguments passed to your scraper function and returns the options to pass to the [axios](https://www.npmjs.com/package/axios) module to make the network request.
 
 **Required**
 
 
 #### `options.extract = function(response, body, $)`
 
-Function that takes [request](https://www.npmjs.com/package/request) response, the response body (_String_) and a [cheerio](https://www.npmjs.com/package/cheerio) instance. It returns the extracted data you want.
+Function that takes [axios](https://www.npmjs.com/package/axios) response, the response body (_String_) and a [cheerio](https://www.npmjs.com/package/cheerio) instance. It returns the extracted data you want.
 
 **Required**
 
@@ -136,48 +149,17 @@ The option to pass to [ajv](https://www.npmjs.com/package/ajv) when it compiles 
 Optional, default: `{allErrors: true}` - It check all rules collecting all errors
 
 
-#### `options.validateList`
-
-Use this option to validate each item of the data extracted **individually**. When `true`, the data extracted is **required to be an Array**, otherwise an _Error_ is returned in callback.
-
-Optional, default: `false`
-
-
-#### scraper function
-
-To use your scraper function, pass the params to send to `options.request`, and a callback function.
-
-```js
-scraper(params, function (error, data) {
-  if (error) {
-    // handle the `error`
-  } else {
-    // do something with `data`
-  }
-});
-```
-
-##### callback(error, data)
-
-- When a network request error occurred, the callback `error` argument will be an _Error_ and the `data` will be _null_.
-
-- When `options.validateList = false` and a validation error occurred, `error` will be a _ValidationError_ and the `data` will be _null_. Otherwise, the `error` will be _null_ and `data` will be the returned value of `options.extract`.
-
-- When `options.validateList = true` and a validation errors occurred, `error` will be a _ListValidationError_, otherwise it will be _null_. If the value returned by `options.extract` is not an Array, `error` will be an instance of _Error_. The `data` always be an _Array_ that only contains the **valid** item returned by `options.extract`. It's not because `error` is a _ListValidationError_ that there will be no `data`!
-
-
-
 ## dependecies
 
-- [request](https://www.npmjs.com/package/request) - Simplified HTTP request client.
-- [cheerio](https://www.npmjs.com/package/cheerio) - Tiny, fast, and elegant implementation of core jQuery designed specifically for the server.
-- [ajv](https://www.npmjs.com/package/ajv) - Another JSON Schema Validator.
+- [axios](https://www.npmjs.com/package/axios) - Promise based HTTP client for the browser and node.js.
+- [cheerio](https://www.npmjs.com/package/cheerio) - Fast, flexible, and lean implementation of core jQuery designed specifically for the server.
+- [ajv](https://www.npmjs.com/package/ajv) - The fastest JSON Schema Validator. Supports draft-04/06/07.
 
 
 ## dev dependecies
 
-- [jasmine](https://www.npmjs.com/package/jasmine) - DOM-less simple JavaScript testing framework.
-- [nock](https://www.npmjs.com/package/nock) HTTP Server mocking for Node.js.
+- [jasmine](https://www.npmjs.com/package/jasmine) - Simple JavaScript testing framework for browsers and node.js.
+- [nock](https://www.npmjs.com/package/nock) HTTP server mocking and expectations library for Node.js.
 
 ## test
 
